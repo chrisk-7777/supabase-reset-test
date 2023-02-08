@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createClient, UserResponse } from "@supabase/supabase-js";
+import { createClient, User } from "@supabase/supabase-js";
 import { Auth } from "@supabase/auth-ui-react";
 
 import "./App.css";
@@ -7,7 +7,7 @@ import "./App.css";
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 
 function App() {
-  const [user, setUser] = useState<UserResponse | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [view, setView] = useState<"UPDATE_PASSWORD" | null>(null);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ function App() {
 
       switch (e) {
         case "SIGNED_IN": {
-          setUser(await supabase.auth.getUser());
+          setUser((await supabase.auth.getUser()).data.user);
           break;
         }
         case "SIGNED_OUT": {
@@ -37,7 +37,7 @@ function App() {
 
     console.log("app@initial app mount");
     (async () => {
-      setUser(await supabase.auth.getUser());
+      setUser((await supabase.auth.getUser()).data.user);
     })();
 
     return () => {
